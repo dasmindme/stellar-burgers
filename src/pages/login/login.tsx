@@ -1,4 +1,4 @@
-import { FC, SyntheticEvent, useState } from 'react';
+import { FC, SyntheticEvent } from 'react';
 import { LoginUI } from '@ui-pages';
 import { useDispatch } from '../../services/store';
 import {
@@ -7,15 +7,20 @@ import {
 } from '../../services/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { setCookie } from '../../utils/cookie';
+import { useForm } from '../../hooks/useForm';
 
 export const Login: FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+
+  const { values, handleChange, setValues } = useForm({
+    email: '',
+    password: ''
+  });
+
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }))
+    dispatch(loginUser(values))
       .unwrap()
       .then((data) => {
         try {
@@ -28,13 +33,18 @@ export const Login: FC = () => {
       .then(() => dispatch(makeLoginUserSuccess(true)))
       .then(() => navigate('/'));
   };
+
   return (
     <LoginUI
       errorText=''
-      email={email}
-      setEmail={setEmail}
-      password={password}
-      setPassword={setPassword}
+      email={values.email}
+      setEmail={(value: string) =>
+        setValues((prev) => ({ ...prev, email: value }))
+      }
+      password={values.password}
+      setPassword={(value: string) =>
+        setValues((prev) => ({ ...prev, password: value }))
+      }
       handleSubmit={handleSubmit}
     />
   );

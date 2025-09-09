@@ -33,17 +33,20 @@ export const OrderInfo: FC = () => {
     };
 
     const ingredientsInfo = orderData.ingredients.reduce(
-      (acc: TIngredientsWithCount, item) => {
-        if (!acc[item]) {
-          const ingredient = ingredients.find((ing) => ing._id === item);
-          if (ingredient) {
-            acc[item] = {
-              ...ingredient,
-              count: 1
-            };
-          }
+      (acc: TIngredientsWithCount, itemId) => {
+        const ingredient = ingredients.find((ing) => ing._id === itemId);
+        if (!ingredient) return acc;
+
+        const isBun = ingredient.type === 'bun';
+        const countToAdd = isBun ? 2 : 1;
+
+        if (!acc[itemId]) {
+          acc[itemId] = {
+            ...ingredient,
+            count: countToAdd
+          };
         } else {
-          acc[item].count++;
+          acc[itemId].count += countToAdd;
         }
 
         return acc;

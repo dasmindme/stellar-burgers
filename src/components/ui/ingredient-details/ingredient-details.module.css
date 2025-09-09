@@ -1,10 +1,19 @@
-.content {
+/* .content {
   margin: 0 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   width: 520px;
+} */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 .nutritional_values {
@@ -21,4 +30,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.pageWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  padding: 40px 20px;
+  box-sizing: border-box;
+  width: 100%;
 }

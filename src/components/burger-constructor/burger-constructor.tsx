@@ -12,7 +12,8 @@ import {
   getOrderRequestStatus,
   getUserAuthStatus,
   newUserOrder,
-  setLastOrder
+  setLastOrder,
+  getUserOrders
 } from '../../services/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { getAllFeeds } from '../../services/slices/feedsSlice';
@@ -36,7 +37,9 @@ export const BurgerConstructor: FC = () => {
     if (!isAuthenticated) {
       return navigate('/login');
     }
+
     if (!constructorItems.bun || orderRequest) return;
+
     const ingredientsId: string[] = [
       constructorItems.bun._id,
       ...constructorItems.ingredients.map(
@@ -44,9 +47,16 @@ export const BurgerConstructor: FC = () => {
       )
     ];
 
-    dispatch(newUserOrder(ingredientsId));
-    dispatch(resetConstructor());
-    dispatch(getAllFeeds());
+    dispatch(newUserOrder(ingredientsId))
+      .unwrap()
+      .then(() => {
+        dispatch(getAllFeeds());
+        dispatch(getUserOrders());
+        dispatch(resetConstructor());
+      })
+      .catch((err) => {
+        console.error('Ошибка при создании заказа:', err);
+      });
   };
   const closeOrderModal = () => dispatch(setLastOrder(null));
 

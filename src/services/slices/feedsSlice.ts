@@ -31,14 +31,11 @@ export const initialState: TFeedsSlice = {
   success: false
 };
 
-export const getAllFeeds = createAsyncThunk('feeds/getAll', async () =>
-  getFeedsApi()
-);
+export const getAllFeeds = createAsyncThunk('feeds/getAll', getFeedsApi);
 
 export const getOrderByNumber = createAsyncThunk(
   'feeds/getOrderById',
-  async (currentNumber: number) =>
-    getOrderByNumberApi(currentNumber).then((data) => data)
+  getOrderByNumberApi
 );
 
 const feedsSlice = createSlice({

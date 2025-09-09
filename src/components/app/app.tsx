@@ -18,47 +18,31 @@ import { useDispatch } from '../../services/store';
 import { getIngredients } from '../../services/slices/ingredientsSlice';
 import { useEffect } from 'react';
 import { ProtectedRoute } from '../protected-route/protected-route';
-import { getAllFeeds } from '../../services/slices/feedsSlice';
-import { getUserAuth, getUserOrders } from '../../services/slices/userSlice';
+import { getUserAuth } from '../../services/slices/userSlice';
 
 const App = () => {
   const navigate = useNavigate();
-
   const location = useLocation();
-  const backgroundLocation = location?.state?.background;
+
+  const backgroundLocation = location.state?.background;
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getIngredients());
-    dispatch(getAllFeeds());
     dispatch(getUserAuth());
-    dispatch(getUserOrders());
   }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
 
+      {/* Основные маршруты: страницы */}
       <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
-        <Route
-          path='/feed/:number'
-          element={
-            <Modal title={'Детали заказа'} onClose={() => navigate('/feed')}>
-              <OrderInfo />
-            </Modal>
-          }
-        />
-
-        <Route
-          path='/ingredients/:id'
-          element={
-            <Modal title={'Детали ингредиента'} onClose={() => navigate('/')}>
-              <IngredientDetails />
-            </Modal>
-          }
-        />
+        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
 
         <Route
           path='/profile'
@@ -68,7 +52,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/profile/orders'
           element={
@@ -77,17 +60,11 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/profile/orders/:number'
           element={
             <ProtectedRoute>
-              <Modal
-                title={'Детали заказа'}
-                onClose={() => navigate('/profile/orders')}
-              >
-                <OrderInfo />
-              </Modal>
+              <OrderInfo />
             </ProtectedRoute>
           }
         />
@@ -100,7 +77,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/forgot-password'
           element={
@@ -109,7 +85,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/reset-password'
           element={
@@ -118,7 +93,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/register'
           element={
@@ -127,16 +101,16 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
+      {/* Модалки: отображаются только при наличии backgroundLocation */}
       {backgroundLocation && (
         <Routes>
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title={'Детали ингредиента'} onClose={() => navigate('/')}>
+              <Modal title='Детали ингредиента' onClose={() => navigate(-1)}>
                 <IngredientDetails />
               </Modal>
             }
@@ -144,7 +118,7 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal title={'Детали заказа'} onClose={() => navigate('/feed')}>
+              <Modal title='Детали заказа' onClose={() => navigate(-1)}>
                 <OrderInfo />
               </Modal>
             }
@@ -153,10 +127,7 @@ const App = () => {
             path='/profile/orders/:number'
             element={
               <ProtectedRoute>
-                <Modal
-                  title={'Детали заказа'}
-                  onClose={() => navigate('/profile/orders')}
-                >
+                <Modal title='Детали заказа' onClose={() => navigate(-1)}>
                   <OrderInfo />
                 </Modal>
               </ProtectedRoute>
