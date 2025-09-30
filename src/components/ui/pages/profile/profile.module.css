@@ -5,3 +5,17 @@
 .form {
   max-width: 480px;
 }
+
+.disabledWrapper .text_type_main-default {
+  color: #8585ad;
+}
+
+.editableWrapper .text_type_main-default {
+  color: #f2f2f3;
+}
+
+.editableWrapper .input__container {
+  border: 1px solid #4c4cff;
+  box-shadow: 0 0 4px #4c4cff;
+  border-radius: 8px;
+}
