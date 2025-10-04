@@ -1,13 +1,12 @@
-const testUrl = 'http://localhost:4000';
 const burgerConstructorSelector = '[data-cy=burger-constructor]';
 const mainsConstructorSelector = '[data-cy=ingredients-mains]';
 const saucesConstructorSelector = '[data-cy=ingredients-sauces]';
 const closeModalSelector = '[data-cy=modal-close]';
 
-describe('проверяем доступность приложения', () => {
+describe('добавление ингредиентов в конструктор', () => {
   beforeEach(() => {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' });
-    cy.visit(testUrl);
+    cy.visit('/');
   });
 
   it('ингредиент должен добавляться в коструктор', () => {
@@ -23,7 +22,7 @@ describe('проверяем доступность приложения', () =>
 describe('тесты модального окна', () => {
   beforeEach(() => {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' });
-    cy.visit(testUrl);
+    cy.visit('/');
   });
 
   it('открывается модальное окно при клике на ингредиент', () => {
@@ -37,6 +36,24 @@ describe('тесты модального окна', () => {
     cy.contains('Ингредиент 1').click();
     cy.contains('Детали ингредиента').should('exist');
     cy.get(closeModalSelector).click();
+    cy.contains('Детали ингредиента').should('not.exist');
+  });
+
+  it('закрывается при клике на оверлей', () => {
+  cy.contains('Ингредиент 1').click({ force: true });
+  cy.contains('Детали ингредиента').should('exist');
+
+  cy.get('[data-cy=modal-overlay]')
+    .should('exist')
+    .click('topLeft', { force: true });
+
+  cy.contains('Детали ингредиента').should('not.exist');
+});
+
+  it('закрывается при нажатии клавиши Esc', () => {
+    cy.contains('Ингредиент 1').click();
+    cy.contains('Детали ингредиента').should('exist');
+    cy.get('body').type('{esc}');
     cy.contains('Детали ингредиента').should('not.exist');
   });
 });
@@ -53,7 +70,7 @@ describe('тесты оформления заказа', () => {
       JSON.stringify('fakeRefreshToken')
     );
     cy.setCookie('accessToken', 'fakeAccessToken');
-    cy.visit(testUrl);
+    cy.visit('/');
   });
 
   afterEach(() => {
